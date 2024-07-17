@@ -247,7 +247,7 @@ export function queryDefaultAssets(projectRoot: string, sys: ts.System): Assets 
     } else {
         const compilerParent = crosspath.dirname(compilerRoot);
         if (crosspath.basename(compilerParent) === "node_modules" &&
-                sys.directoryExists(crosspath.join(compilerParent, "@frida"))) {
+            sys.directoryExists(crosspath.join(compilerParent, "@frida"))) {
             shimDir = compilerParent;
         } else {
             throw new Error("Unable to detect shim directory; please file a bug");
@@ -280,6 +280,8 @@ export function queryDefaultAssets(projectRoot: string, sys: ts.System): Assets 
         ["url", crosspath.join(shimDir, "@frida", "url")],
         ["util", crosspath.join(shimDir, "@frida", "util")],
         ["vm", crosspath.join(shimDir, "@frida", "vm")],
+        ["zlib", "./empty.js"],
+        ["tls", "./empty.js"],
     ]);
 
     const nodeShimNames = [
@@ -714,10 +716,10 @@ function resolveModuleReference(ref: ModuleReference, assets: Assets, system: ts
             needsAlias = true;
         } else {
             const linkedCompilerRoot = crosspath.join(assets.projectNodeModulesDir, "frida-compile");
-            const {shimDir} = assets;
+            const { shimDir } = assets;
             if (requesterPath.startsWith(compilerRoot) ||
-                    requesterPath.startsWith(linkedCompilerRoot) ||
-                    requesterPath.startsWith(shimDir)) {
+                requesterPath.startsWith(linkedCompilerRoot) ||
+                requesterPath.startsWith(shimDir)) {
                 modPath = crosspath.join(shimDir, ...tokens);
             } else {
                 modPath = crosspath.join(assets.projectNodeModulesDir, ...tokens);
